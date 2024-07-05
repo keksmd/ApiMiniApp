@@ -31,8 +31,6 @@ public class ApiClientApplication implements CommandLineRunner {
         if (this.apiRequestManager.registerUser(userDTO)) {
             String code = this.apiRequestManager.takeCode(userDTO);
             this.apiRequestManager.setStatusIncreased(code, userDTO);
-        }else{
-            System.out.println("pososi");
         }
     }
 }

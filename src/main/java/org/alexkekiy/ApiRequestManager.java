@@ -18,31 +18,25 @@ public class ApiRequestManager {
     ApiRequestService apiRequestService;
     @Setter
     private String URLContext;
-
     public ApiRequestManager(ApiRequestService apiRequestService) {
         this.URLContext = "";
         this.apiRequestService = apiRequestService;
     }
-
     public String takeRole() {
         String[] roles = apiRequestService.executeGet(this.URLContext + getRolesAdress, null).getBody().replace("[", "").replace("]", "").replace("{", "").replace("}", "").replaceAll("\"", "").replace("roles", "").replaceAll(":", "").split(",");
         if (roles.length == 0) {
             throw new RuntimeException("Получен пустой массив ролей");
         } else {
             int randomIndex = (int) (Math.random() * roles.length);
-
             return roles[randomIndex];
         }
-
     }
 
     public boolean registerUser(UserDTO userDTO) {
 
         return (this.apiRequestService.executePost(URLContext + signUpAdress, null, userDTO.getProperties()).getBody()).equals("\"Данные внесены\"");
     }
-
     public String takeCode(UserDTO userDTO) {
-
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("email", userDTO.getEmail());
         String code = this.apiRequestService.executeGet(URLContext + getCodeAdress, params).getBody();
@@ -50,14 +44,12 @@ public class ApiRequestManager {
         if (code.isBlank() || code.isEmpty()) {
             throw new RuntimeException("Получен пустой ответ вместо кода");
         } else {
-
             return code;
         }
 
     }
 
     public void setStatusIncreased(String code, UserDTO userDTO) {
-
         String token = Base64Encrypter.encodeEmailAndCode(code, userDTO.getEmail());
         Map<String, String> parametrs = new LinkedHashMap<>();
         parametrs.put("token", token);
@@ -65,6 +57,5 @@ public class ApiRequestManager {
         if (this.apiRequestService.executePost(URLContext + setStatusAdress, parametrs, null).getBody().equals("Данные внесены")) {
             throw new RuntimeException("Получен неожиданный или невалидный ответ");
         }
-
     }
 }
